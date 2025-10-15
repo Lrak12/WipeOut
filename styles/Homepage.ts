@@ -99,7 +99,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 200, 200, 0.15)', // subtle theme tint
+    backgroundColor: 'rgba(0, 200, 200, 0.15)',
   },
   modalContainer: {
     backgroundColor: '#E6F5F5',
