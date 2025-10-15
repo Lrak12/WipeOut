@@ -277,7 +277,7 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   
-  // Status button styles (if not already added)
+  // Status button styles 
   statusButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
