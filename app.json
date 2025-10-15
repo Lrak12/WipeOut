@@ -19,7 +19,7 @@
       "package": "com.yourname.washapp",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyAZfI-A_0CamEVloKKjwj4Vq_EzK1Wsj4Y"
+          "apiKey": ""
         }
       }
     },
