@@ -368,7 +368,7 @@ const StylesScreen = () => {
         )}
       </ScrollView>
 
-      {/* Instructions Button - Always visible on left side */}
+      {/* Instructions Button left side */}
       <TouchableOpacity 
         style={styles.instructionsToggleButton}
         onPress={() => setInstructionsVisible(true)}
@@ -376,7 +376,7 @@ const StylesScreen = () => {
         <Image source={require('../assets/images/instructions.png')} style={styles.navbuttonInstruction} />
       </TouchableOpacity>
 
-      {/* FLOATING ACTION BUTTON - Make a report */}
+      {/*  Make a report button */}
       <TouchableOpacity 
         style={styles.floatingButton}
         onPress={() => setModalVisible(true)}
