@@ -50,7 +50,6 @@ const MapPageAdmin = () => {
     setAlertVisible(true);
   };
 
-  // ✅ Fetch ALL reports (admin view)
   const fetchAllReports = async () => {
     try {
       const snapshot = await getDocs(collection(db, 'Reports'));
