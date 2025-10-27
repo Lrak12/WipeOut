@@ -1,34 +1,46 @@
 import { StyleSheet } from 'react-native';
-
+import {
+  borderRadius,
+  fontScale,
+  isTablet,
+  safeArea,
+  scale,
+  verticalScale
+} from '../utils/responsive';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
+  
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
   },
+  
   loadingText: {
-    fontSize: 16,
+    fontSize: fontScale(16),
     color: '#666',
   },
+  
   header: {
-  backgroundColor: '#FFFFFF',
-  paddingTop: 20,
-  paddingBottom: 25,
-  paddingHorizontal: 20,
+    backgroundColor: '#FFFFFF',
+    paddingTop: safeArea.top + verticalScale(1),
+    paddingBottom: verticalScale(1),
+    paddingHorizontal: scale(20),
   },
+  
   headerTop: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  
   headerTitle: {
-    fontSize: 32,
+    fontSize: fontScale(isTablet ? 36 : 32),
     fontWeight: 'bold',
     color: '#00C8C8',
     textAlign: 'center',
@@ -36,392 +48,449 @@ export const styles = StyleSheet.create({
 
   statsBar: {
     backgroundColor: '#FFFFFF',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: scale(20),
+    borderBottomWidth: scale(1),
     borderBottomColor: '#E0E0E0',
   },
+  
   statsText: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: '#666',
     fontWeight: '600',
   },
+  
   map: {
     flex: 1,
   },
+  
   legend: {
     position: 'absolute',
-    top: 120,
-    right: 15,
+    top: verticalScale(120),
+    right: scale(15),
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    padding: 12,
-    borderRadius: 12,
+    padding: scale(12),
+    borderRadius: borderRadius.m,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: verticalScale(2) },
     shadowOpacity: 0.2,
-    shadowRadius: 4,
+    shadowRadius: scale(4),
     elevation: 5,
+    maxWidth: scale(isTablet ? 200 : 150),
   },
+  
   legendTitle: {
-    fontSize: 12,
+    fontSize: fontScale(12),
     fontWeight: 'bold',
     color: '#1A1A2E',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
+  
   legendRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 4,
+    marginVertical: verticalScale(4),
   },
+  
   legendDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginRight: 8,
+    width: scale(12),
+    height: scale(12),
+    borderRadius: scale(6),
+    marginRight: scale(8),
   },
+  
   legendText: {
-    fontSize: 11,
+    fontSize: fontScale(11),
     color: '#666',
+    flex: 1,
   },
+  
   noReportsOverlay: {
     position: 'absolute',
     top: '40%',
-    left: 20,
-    right: 20,
+    left: scale(20),
+    right: scale(20),
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    padding: 20,
-    borderRadius: 15,
+    padding: scale(20),
+    borderRadius: borderRadius.l,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: verticalScale(2) },
     shadowOpacity: 0.2,
-    shadowRadius: 8,
+    shadowRadius: scale(8),
     elevation: 5,
   },
+  
   noReportsText: {
-    fontSize: 16,
+    fontSize: fontScale(16),
     color: '#666',
-    marginBottom: 15,
+    marginBottom: verticalScale(15),
     textAlign: 'center',
+    lineHeight: fontScale(22),
   },
+  
   createReportButton: {
     backgroundColor: '#00C8C8',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 25,
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(12),
+    borderRadius: borderRadius.xxl,
   },
+  
   createReportButtonText: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontWeight: '600',
   },
+  
   bottomNavBar: {
     position: 'absolute',
-    bottom: 15,
-    left: 15,
-    right: 15,
+    bottom: verticalScale(15),
+    left: scale(15),
+    right: scale(15),
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#fff',
-    paddingVertical: 15,
-    borderRadius: 25,
+    paddingVertical: verticalScale(15),
+    borderRadius: borderRadius.xxl,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: verticalScale(4) },
     shadowOpacity: 0.15,
-    shadowRadius: 12,
+    shadowRadius: scale(12),
     elevation: 8,
   },
+  
   navItem: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
-    paddingVertical: 5,
+    paddingVertical: verticalScale(5),
   },
+  
   navIconImg: {
-    width: 24,
-    height: 24,
+    width: scale(24),
+    height: scale(24),
     resizeMode: 'contain',
     tintColor: '#4ECAC9',
   },
+  
   customMarker: {
     alignItems: 'center',
   },
+  
   markerDot: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
+    width: scale(24),
+    height: scale(24),
+    borderRadius: scale(12),
+    borderWidth: scale(2),
     borderColor: '#FFFFFF',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: verticalScale(2) },
     shadowOpacity: 0.3,
-    shadowRadius: 3,
+    shadowRadius: scale(3),
     elevation: 5,
   },
+  
   markerTail: {
     width: 0,
     height: 0,
-    borderLeftWidth: 6,
-    borderRightWidth: 6,
-    borderTopWidth: 8,
+    borderLeftWidth: scale(6),
+    borderRightWidth: scale(6),
+    borderTopWidth: scale(8),
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    marginTop: -2,
+    marginTop: verticalScale(-2),
   },
+  
   mapModalContainer: {
-  flex: 1,
-  backgroundColor: '#FFFFFF',
+    flex: 1,
+    backgroundColor: '#FFFFFF',
   },
+  
   mapModalHeader: {
     backgroundColor: '#00C8C8',
-    paddingTop: 50,
-    paddingBottom: 20,
+    paddingTop: safeArea.top + verticalScale(20),
+    paddingBottom: verticalScale(20),
   },
+  
   mapModalHeaderContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: scale(20),
   },
+  
   mapModalBackButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: scale(40),
+    height: scale(40),
+    borderRadius: scale(20),
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  
   mapModalBackIcon: {
-    fontSize: 24,
+    fontSize: fontScale(24),
     color: '#FFFFFF',
     fontWeight: '600',
   },
+  
   mapModalTitleContainer: {
     flex: 1,
-    marginLeft: 15,
+    marginLeft: scale(15),
   },
+  
   mapModalTitle: {
-    fontSize: 20,
+    fontSize: fontScale(20),
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
+  
   mapModalSubtitle: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: 'rgba(255, 255, 255, 0.7)',
   },
+  
   mapModalHeaderSpacer: {
-    width: 40,
+    width: scale(40),
   },
+  
   mapModalScrollView: {
     flex: 1,
   },
+  
   mapModalStatusCard: {
     backgroundColor: '#FFFFFF',
-    margin: 20,
-    marginBottom: 15,
-    padding: 20,
-    borderRadius: 20,
+    margin: scale(20),
+    marginBottom: verticalScale(15),
+    padding: scale(20),
+    borderRadius: borderRadius.xl,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: verticalScale(2) },
     shadowOpacity: 0.08,
-    shadowRadius: 10,
+    shadowRadius: scale(10),
     elevation: 4,
   },
+  
   mapModalStatusHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: verticalScale(12),
   },
+  
   mapModalStatusIndicator: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginRight: 12,
+    width: scale(12),
+    height: scale(12),
+    borderRadius: scale(6),
+    marginRight: scale(12),
   },
+  
   mapModalStatusInfo: {
     flex: 1,
   },
+  
   mapModalStatusLabel: {
-    fontSize: 12,
+    fontSize: fontScale(12),
     color: '#8E8E93',
-    marginBottom: 2,
+    marginBottom: verticalScale(2),
   },
+  
   mapModalStatusValue: {
-    fontSize: 18,
+    fontSize: fontScale(18),
     fontWeight: '600',
   },
+  
   mapModalStatusMessage: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: '#636366',
-    lineHeight: 20,
+    lineHeight: verticalScale(20),
     fontStyle: 'italic',
   },
+  
   mapModalImageSection: {
-    marginHorizontal: 20,
-    marginBottom: 15,
-    borderRadius: 20,
+    marginHorizontal: scale(20),
+    marginBottom: verticalScale(15),
+    borderRadius: borderRadius.xl,
     overflow: 'hidden',
     position: 'relative',
   },
+  
   mapModalImage: {
     width: '100%',
-    height: 200,
-    borderRadius: 20,
+    height: verticalScale(200),
+    borderRadius: borderRadius.xl,
   },
+  
   mapModalImageOverlay: {
     position: 'absolute',
-    top: 15,
-    left: 15,
+    top: scale(15),
+    left: scale(15),
   },
+  
   mapModalImageBadge: {
     backgroundColor: 'rgba(26, 26, 46, 0.9)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
+    paddingHorizontal: scale(12),
+    paddingVertical: verticalScale(6),
+    borderRadius: borderRadius.xl,
   },
+  
   mapModalImageBadgeText: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: fontScale(12),
     fontWeight: '600',
   },
+  
   mapModalDetailsCard: {
     backgroundColor: '#FFFFFF',
-    marginHorizontal: 20,
-    marginBottom: 15,
-    padding: 20,
-    borderRadius: 20,
+    marginHorizontal: scale(20),
+    marginBottom: verticalScale(15),
+    padding: scale(20),
+    borderRadius: borderRadius.xl,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: verticalScale(2) },
     shadowOpacity: 0.08,
-    shadowRadius: 10,
+    shadowRadius: scale(10),
     elevation: 4,
   },
+  
   mapModalDetailSection: {
     flexDirection: 'row',
-    paddingVertical: 12,
+    paddingVertical: verticalScale(12),
   },
+  
   mapModalDetailIcon: {
-    fontSize: 20,
-    marginRight: 15,
-    width: 30,
+    fontSize: fontScale(20),
+    marginRight: scale(15),
+    width: scale(30),
     textAlign: 'center',
   },
+  
   mapModalDetailContent: {
     flex: 1,
   },
+  
   mapModalDetailLabel: {
-    fontSize: 12,
+    fontSize: fontScale(12),
     color: '#8E8E93',
-    marginBottom: 4,
+    marginBottom: verticalScale(4),
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: scale(0.5),
   },
+  
   mapModalDetailValue: {
-    fontSize: 16,
+    fontSize: fontScale(16),
     color: '#1A1A2E',
     fontWeight: '500',
+    lineHeight: fontScale(22),
   },
+  
   mapModalDetailDescription: {
-    fontSize: 15,
+    fontSize: fontScale(15),
     color: '#3A3A3C',
-    lineHeight: 22,
+    lineHeight: verticalScale(22),
   },
+  
   mapModalDetailTime: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: '#8E8E93',
-    marginTop: 2,
+    marginTop: verticalScale(2),
   },
+  
   mapModalDetailDivider: {
-    height: 1,
+    height: scale(1),
     backgroundColor: '#F2F2F7',
-    marginVertical: 8,
-    marginLeft: 45,
+    marginVertical: verticalScale(8),
+    marginLeft: scale(45),
   },
+  
   mapModalMapSection: {
     backgroundColor: '#FFFFFF',
-    marginHorizontal: 20,
-    marginBottom: 15,
-    borderRadius: 20,
+    marginHorizontal: scale(20),
+    marginBottom: verticalScale(15),
+    borderRadius: borderRadius.xl,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: verticalScale(2) },
     shadowOpacity: 0.08,
-    shadowRadius: 10,
+    shadowRadius: scale(10),
     elevation: 4,
   },
+  
   mapModalMapHeader: {
-    padding: 20,
-    paddingBottom: 15,
+    padding: scale(20),
+    paddingBottom: verticalScale(15),
   },
+  
   mapModalMapTitle: {
-    fontSize: 18,
+    fontSize: fontScale(18),
     fontWeight: '600',
     color: '#00C8C8',
   },
+  
   mapModalMapContainer: {
-    height: 300,
+    height: verticalScale(isTablet ? 400 : 300),
     position: 'relative',
   },
+  
   mapModalMap: {
     flex: 1,
   },
+  
   mapModalCustomMarker: {
     alignItems: 'center',
   },
+  
   mapModalBottomSpace: {
-    height: 30,
+    height: verticalScale(30),
   },
 
-
-overlay:{
+  overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
-  alertContainer:{
+  alertContainer: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 25,
-    width: '85%',
-    maxWidth: 400,
+    borderRadius: borderRadius.xl,
+    padding: scale(25),
+    width: isTablet ? '60%' : '85%',
+    maxWidth: scale(400),
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: verticalScale(2) },
     shadowOpacity: 0.25,
-    shadowRadius: 4,
+    shadowRadius: scale(4),
     elevation: 5,
   },
 
-  message:{
-    fontSize: 20,
+  message: {
+    fontSize: fontScale(18),
     color: '#666',
     textAlign: 'center',
-    marginBottom: 20,
-    lineHeight: 22,
+    marginBottom: verticalScale(20),
+    lineHeight: fontScale(24),
   },
 
-  button:{
+  button: {
     backgroundColor: '#00C8C8',
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-    borderRadius: 25,
-    marginTop: 10,
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: scale(40),
+    borderRadius: borderRadius.xxl,
+    marginTop: verticalScale(10),
   },
 
-  buttonText:{
+  buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: fontScale(16),
     fontWeight: 'bold',
   },
 
-  title:{
-    fontSize: 24,
+  title: {
+    fontSize: fontScale(22),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
-  }, 
-
-  
+    marginBottom: verticalScale(10),
+    color: '#333',
+  },
 });

@@ -398,21 +398,15 @@ const MapPageAdmin = () => {
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNavBar}>
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => router.push('/mapPageAdmin')}
-        >
-          <Image
-            source={require('../assets/images/map.png')}
-            style={styles.navIconImg}
-          />
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/admin')}>
+          <Image source={require('../assets/images/user.png')} style={styles.navIconImg} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/mapPageAdmin')} disabled={true}>
+          <Image source={require('../assets/images/map.png')} style={styles.navIconImg} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navItem} onPress={confirmLogout}>
-          <Image
-            source={require('../assets/images/logout.png')}
-            style={styles.navIconImg}
-          />
+          <Image source={require('../assets/images/logout.png')} style={styles.navIconImg}/>
         </TouchableOpacity>
       </View>
 

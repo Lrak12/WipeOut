@@ -16,6 +16,8 @@ const LoginScreen = () => {
   const [alertTitle, setAlertTitle] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
   const [loginType, setLoginType] = useState<'user' | 'admin'>('user');
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const showCustomAlert = (title: string, message: string) => {
     setAlertTitle(title);
@@ -93,14 +95,34 @@ const LoginScreen = () => {
       />
 
       {/* Password Input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Enter password"
-        placeholderTextColor="#999"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.passwordInput}
+          placeholder="Enter password"
+          placeholderTextColor="#999"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={!showPassword}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+        
+        {/* 🆕 Show/Hide Password Button */}
+        <TouchableOpacity 
+          style={styles.eyeButton}
+          onPress={() => setShowPassword(!showPassword)}
+        >
+          <Image 
+            source={
+              showPassword 
+                ? require('../assets/images/hide.png')
+                : require('../assets/images/show.png')
+            }
+            style={styles.eyeImage}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+      </View>
 
       {/* Login Button */}
       <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>

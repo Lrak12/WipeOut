@@ -17,11 +17,27 @@ const RegisterScreen = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
+  
+  const [showPasswordBubble, setShowPasswordBubble] = useState(false);
 
   const showCustomAlert = (title: string, message: string) => {
     setAlertTitle(title);
     setAlertMessage(message);
     setAlertVisible(true);
+  };
+
+
+  const getPasswordRequirements = (text: string) => {
+    const hasMinLength = text.length >= 8;
+    const hasNumbers = (text.match(/\d/g) || []).length >= 2;
+    const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(text);
+    
+    return {
+      hasMinLength,
+      hasNumbers,
+      hasSymbol,
+      allMet: hasMinLength && hasNumbers && hasSymbol
+    };
   };
 
   const generateIncrementalUserId = async () => {
@@ -139,12 +155,11 @@ const RegisterScreen = () => {
       
       console.log('User document created successfully');
       showCustomAlert('Success', 'Account created successfully!');
-      router.replace('/profile'); 
+      router.replace('/login'); 
       
     } catch (error) {
       console.error('Registration error:', error);
       
-
       if (error instanceof Error) {
         switch (error.message) {
           case 'Firebase: Error (auth/email-already-in-use).':
@@ -169,6 +184,7 @@ const RegisterScreen = () => {
     }
   };
 
+  const requirements = getPasswordRequirements(password);
   
   return (
     <View style={styles.container}>
@@ -179,6 +195,7 @@ const RegisterScreen = () => {
       <Text style={styles.subtitle}>
         Let's make a difference by being alert and active
       </Text>
+      
       <TextInput
         style={styles.input}
         placeholder="First Name"
@@ -189,6 +206,7 @@ const RegisterScreen = () => {
         autoCorrect={false}
         maxLength={50}
       />
+      
       <TextInput
         style={styles.input}
         placeholder="Last Name"
@@ -199,6 +217,7 @@ const RegisterScreen = () => {
         autoCorrect={false}
         maxLength={50}
       />
+      
       <TextInput
         style={styles.input}
         placeholder="Enter your email"
@@ -211,55 +230,139 @@ const RegisterScreen = () => {
         autoComplete="email"
         maxLength={100}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter password"
-        placeholderTextColor="#999"
-        secureTextEntry = {true}
-        value={password}
-        onChangeText={setPassword}
-        autoCapitalize="none"
-        autoCorrect={false}
-        autoComplete="password"
-        maxLength={50}
-      />
+      
+      {/* 🆕 Password Input with Bubble Tooltip */}
+      <View style={styles.inputWrapper}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter password"
+          placeholderTextColor="#999"
+          secureTextEntry={true}
+          value={password}
+          onChangeText={setPassword}
+          onFocus={() => setShowPasswordBubble(true)}
+          onBlur={() => setTimeout(() => setShowPasswordBubble(false), 200)}
+          autoCapitalize="none"
+          autoCorrect={false}
+          autoComplete="password"
+          maxLength={50}
+        />
+
+        {/* 🆕 Password Bubble Tooltip */}
+        {showPasswordBubble && !requirements.allMet && (
+          <View style={styles.bubble}>
+            <View style={styles.bubbleArrow} />
+            
+            <View style={styles.bubbleContent}>
+              <Text style={styles.bubbleTitle}>
+                Password must have:
+              </Text>
+              
+              {/* Requirement 1: Length */}
+              <View style={styles.requirementRow}>
+                <View style={[
+                  styles.checkbox,
+                  requirements.hasMinLength && styles.checkboxChecked
+                ]}>
+                  {requirements.hasMinLength && (
+                    <Text style={styles.checkmark}>✓</Text>
+                  )}
+                </View>
+                <Text style={[
+                  styles.requirementText,
+                  requirements.hasMinLength && styles.requirementMet
+                ]}>
+                  At least 8 characters
+                </Text>
+              </View>
+
+              {/* Requirement 2: Numbers */}
+              <View style={styles.requirementRow}>
+                <View style={[
+                  styles.checkbox,
+                  requirements.hasNumbers && styles.checkboxChecked
+                ]}>
+                  {requirements.hasNumbers && (
+                    <Text style={styles.checkmark}>✓</Text>
+                  )}
+                </View>
+                <Text style={[
+                  styles.requirementText,
+                  requirements.hasNumbers && styles.requirementMet
+                ]}>
+                  At least 2 numbers
+                </Text>
+              </View>
+
+              {/* Requirement 3: Special Character */}
+              <View style={styles.requirementRow}>
+                <View style={[
+                  styles.checkbox,
+                  requirements.hasSymbol && styles.checkboxChecked
+                ]}>
+                  {requirements.hasSymbol && (
+                    <Text style={styles.checkmark}>✓</Text>
+                  )}
+                </View>
+                <Text style={[
+                  styles.requirementText,
+                  requirements.hasSymbol && styles.requirementMet
+                ]}>
+                  At least 1 special character
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+      </View>
+      
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"
         placeholderTextColor="#999"
-        secureTextEntry = {true}
+        secureTextEntry={true}
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         autoCapitalize="none"
         autoCorrect={false}
         maxLength={50}
       />
-      <TouchableOpacity style={[ styles.button, loading && {backgroundColor: '#80E6E6'}]} 
-        onPress={handleRegister} disabled={loading}>
-        <Text style={styles.buttonText}> {loading ? 'Creating Account...' : 'Register'}
-
+      
+      <TouchableOpacity 
+        style={[styles.button, loading && {backgroundColor: '#80E6E6'}]} 
+        onPress={handleRegister} 
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? 'Creating Account...' : 'Register'}
         </Text>
       </TouchableOpacity>
       
       <TouchableOpacity onPress={() => router.push('/login')} disabled={loading}>
-
         <Text style={[styles.signInText, loading && {color: '#80E6E6'}]}>
           Already have an account? Sign In
         </Text>
       </TouchableOpacity>
 
-      <Modal visible={alertVisible} transparent={true} animationType="fade" onRequestClose={() => setAlertVisible(false)}>
-
-          <View style={styles.overlay}>
-            <View style={styles.alertContainer}>
-              <Text style={styles.title}>{alertTitle}</Text>
-              <Text style={styles.message}>{alertMessage}</Text>
-              <TouchableOpacity style={styles.button} onPress={() => setAlertVisible(false)}>
-                <Text style={styles.buttonText}>OK</Text>
-              </TouchableOpacity>
-            </View>
+      {/* Alert Modal */}
+      <Modal 
+        visible={alertVisible} 
+        transparent={true} 
+        animationType="fade" 
+        onRequestClose={() => setAlertVisible(false)}
+      >
+        <View style={styles.overlay}>
+          <View style={styles.alertContainer}>
+            <Text style={styles.title}>{alertTitle}</Text>
+            <Text style={styles.message}>{alertMessage}</Text>
+            <TouchableOpacity 
+              style={styles.button} 
+              onPress={() => setAlertVisible(false)}
+            >
+              <Text style={styles.buttonText}>OK</Text>
+            </TouchableOpacity>
           </View>
-          
+        </View>
       </Modal>
     </View>
   );

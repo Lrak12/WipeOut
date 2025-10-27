@@ -128,8 +128,23 @@ const ProfileScreen = () => {
       showCustomAlert('Error', 'First name cannot be empty');
       return;
     }
+    
+    // Check for special characters and numbers in first name
+    const nameRegex = /^[A-Za-z\s]+$/;
+    if (!nameRegex.test(newFirstName.trim())) {
+      showCustomAlert('Invalid First Name', 'First name can only contain letters and spaces. No numbers or special characters allowed.');
+      return;
+    }
+
+    // Validate last name
     if (!newLastName.trim()) {
       showCustomAlert('Error', 'Last name cannot be empty');
+      return;
+    }
+    
+    // Check for special characters and numbers in last name
+    if (!nameRegex.test(newLastName.trim())) {
+      showCustomAlert('Invalid Last Name', 'Last name can only contain letters and spaces. No numbers or special characters allowed.');
       return;
     }
 

@@ -75,9 +75,9 @@ const StylesScreen = () => {
 
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 0.8,
+        allowsEditing: true,  
+        quality: 0.5,
+        exif: false,
       });
 
       if (!result.canceled && result.assets[0]) {
@@ -312,14 +312,6 @@ const StylesScreen = () => {
         {myReports.length === 0 ? (
           <View style={styles.noReportsContainer}>
             <Text style={styles.noReportsText}>No reports yet. Make your first report!</Text>
-            
-            {/* Instructions Toggle Button */}
-            <TouchableOpacity 
-              style={styles.instructionsToggleButton}
-              onPress={() => setInstructionsVisible(true)}
-            >
-              <Text style={styles.instructionsToggleText}>📋 How to Submit a Report</Text>
-            </TouchableOpacity>
           </View>
         ) : (
           myReports.map((report) => (
@@ -408,23 +400,14 @@ const StylesScreen = () => {
             </View>
 
             <ScrollView style={styles.modalScroll}>
-              <TextInput
-                placeholder="Title"
-                value={title}
-                onChangeText={setTitle}
-                style={styles.input}
-                placeholderTextColor="#999"
-              />
-              <TextInput
-                placeholder="Description"
-                value={description}
-                onChangeText={setDescription}
-                style={[styles.input, styles.textArea]}
-                multiline
-                numberOfLines={4}
-                placeholderTextColor="#999"
-              />
-
+              <TextInput placeholder="Title" value={title} onChangeText={setTitle} style={styles.input}placeholderTextColor="#999" maxLength={50}/>
+              <Text style={styles.characterCount}>
+                {title.length}/50 characters
+              </Text>
+              <TextInput placeholder="Description" value={description} onChangeText={setDescription} style={[styles.input, styles.textArea]} multiline numberOfLines={4} placeholderTextColor="#999" maxLength={500}/>
+              <Text style={styles.characterCount}>
+                {description.length}/500 characters
+              </Text>
               {userLocation ? (
                 <MapView
                   style={styles.mapPreview}

@@ -13,4 +13,4 @@ export default function RootLayout() {
       <Stack.Screen name="mapPageAdmin" options={{ title: "Map", headerShown: false }} />
     </Stack>
   );
-}
+} 

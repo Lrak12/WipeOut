@@ -1,13 +1,12 @@
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { getAuth, signOut } from 'firebase/auth';
-import { collection, doc, getDocs, getFirestore, updateDoc } from 'firebase/firestore';
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { collection, deleteDoc, doc, getDocs, getFirestore, updateDoc } from 'firebase/firestore';
+import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import React, { useEffect, useState } from 'react';
 import { Alert, Image, Keyboard, KeyboardAvoidingView, Modal, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { styles } from '../styles/Admin';
-
 
 const AdminPage = () => {
   const router = useRouter();
@@ -27,15 +26,82 @@ const AdminPage = () => {
   const auth = getAuth();
   const db = getFirestore();
 
-
   const showCustomAlert = (title: string, message: string) => {
     setAlertTitle(title);
     setAlertMessage(message);
     setAlertVisible(true);
   };
 
+  const cleanupExpiredReports = async () => {
+    try {
+      console.log('Starting cleanup check...');// console log to see if ga run ba ni siya
+      const reportsSnapshot = await getDocs(collection(db, 'Reports'));
+      const now = new Date();
+      console.log(`Current time: ${now.toLocaleString()}`);
+      const deletedReports: string[] = [];
+
+      for (const docSnapshot of reportsSnapshot.docs) {
+        const report = docSnapshot.data();
+        if (report.scheduledDeletionAt) {
+          const deletionDate = new Date(report.scheduledDeletionAt);
+          console.log(`Report ${docSnapshot.id}: Scheduled for ${deletionDate.toLocaleString()}`);
+          
+          if (now >= deletionDate) {
+            console.log(`Deleting expired report: ${docSnapshot.id}`);// to see if mu show sa console log and ga run ba
+            await deleteDoc(doc(db, 'Reports', docSnapshot.id));
+            if (report.imageUrl) {
+              try {
+                const storage = getStorage();
+                const imageRef = ref(storage, report.imageUrl);
+                await deleteObject(imageRef);
+                console.log(`Deleted image for report ${docSnapshot.id}`);// para ma check if ga delete ba siya sa image
+              } catch (error) {
+                console.log('Error deleting image:', error);
+              }
+            }
+            
+            if (report.resolvedProofImageUrl) {
+              try {
+                const storage = getStorage();
+                const proofRef = ref(storage, report.resolvedProofImageUrl);
+                await deleteObject(proofRef);
+                console.log(`Deleted proof image for report ${docSnapshot.id}`);// ang proof sa user
+              } catch (error) {
+                console.log('Error deleting proof image:', error);
+              }
+            }
+            
+            deletedReports.push(docSnapshot.id);
+          } else {
+            const timeLeft = deletionDate.getTime() - now.getTime();
+            const minutesLeft = Math.floor(timeLeft / (1000 * 60));
+            console.log(`⏳ Report ${docSnapshot.id} will be deleted in ${minutesLeft} minutes`);
+          }
+        }
+      }
+
+      if (deletedReports.length > 0) {
+        console.log(`Cleaned up ${deletedReports.length} expired reports:`, deletedReports);
+        fetchAllData(); // Refresh the data
+      } else {
+        console.log('No expired reports found');
+      }// to see if naay error 
+    } catch (error) {
+      console.error('Error during cleanup:', error);
+    }
+  };
+
   useEffect(() => {
     fetchAllData();
+    cleanupExpiredReports();
+    
+    // Run taga 5 minutes for testing
+    const cleanupInterval = setInterval(() => {
+      console.log('Running scheduled cleanup...');
+      cleanupExpiredReports();
+    }, 5 * 60 * 1000); // 5 minutes
+    //}, 60 * 60 * 1000); for 1 hour
+    return () => clearInterval(cleanupInterval);
   }, []);
 
   const fetchAllData = async () => {
@@ -76,9 +142,9 @@ const AdminPage = () => {
 
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 0.8,
+        allowsEditing: true,  
+        quality: 0.5,
+        exif: false,
       });
 
       if (!result.canceled && result.assets[0]) {
@@ -98,6 +164,14 @@ const AdminPage = () => {
         status: newStatus,
         statusUpdatedAt: new Date().toISOString()
       };
+      
+      if (newStatus === 'Resolved' || newStatus === 'Rejected') {
+        const deletionDate = new Date();
+        deletionDate.setMinutes(deletionDate.getMinutes() + 1);
+        // deletionDate.setDate(deletionDate.getDate() + 30); replace human testing
+        updateData.scheduledDeletionAt = deletionDate.toISOString();
+        console.log(`[TEST MODE] Report will be auto-deleted at: ${deletionDate.toLocaleString()}`);
+      }
       
       if (comment && comment.trim()) {
         updateData.adminComment = comment.trim();
@@ -122,10 +196,9 @@ const AdminPage = () => {
       
       await updateDoc(reportRef, updateData);
       
-      showCustomAlert(
-        'Status Updated', 
-        `Report "${reportTitle}" has been marked as ${newStatus}${proofImageUri ? ' with proof photo' : ''}${comment ? ' and comment' : ''}`
-      );
+      const deletionMessage = (newStatus === 'Resolved' || newStatus === 'Rejected') ? ' It will be automatically deleted after 30 days.' : '';
+      
+      showCustomAlert('Status Updated', `Report "${reportTitle}" has been marked as ${newStatus}${proofImageUri ? ' with proof photo' : ''}${comment ? ' and comment' : ''}.${deletionMessage}`);
       
       fetchAllData();
       console.log('Updated report', reportId, 'to status:', newStatus);
@@ -169,6 +242,11 @@ const AdminPage = () => {
       showCustomAlert('Proof Photo Required', 'Please take a photo as proof that the issue has been resolved.');
       return;
     }
+
+    if (status === 'Rejected' && !adminComment.trim()) {
+      showCustomAlert('Comment Required', 'Please provide a reason for rejecting this report.');
+      return;
+    }
     
     updateReportStatus(reportId, status, title, adminComment, resolvedProofImage || undefined);
     
@@ -209,6 +287,20 @@ const AdminPage = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.replace('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      showCustomAlert('Error', 'Could not sign out. Please try again.');
+    }
+  };
+
+  const confirmLogout = () => {
+    showCustomAlert('Sign Out', 'Are you sure you want to sign out?');
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -216,21 +308,6 @@ const AdminPage = () => {
       </View>
     );
   }
-
-  const handleLogout = async () => {
-      try {
-        await signOut(auth);
-        router.replace('/login');
-      } catch (error) {
-        console.error('Error signing out:', error);
-        showCustomAlert('Error', 'Could not sign out. Please try again.');
-      }
-    };
-  
-    const confirmLogout = () => {
-      showCustomAlert('Sign Out', 'Are you sure you want to sign out?');
-    };
-
 
   return (
     <View style={styles.container}>
@@ -257,7 +334,7 @@ const AdminPage = () => {
             <View key={report.id} style={styles.reportCard}>
               <View style={styles.reportHeader}>
                 <Text style={styles.reportTitle}>{report.title}</Text>
-                <Text style={styles.reportId}>ID: {report.id}</Text>
+                <Text style={styles.reportId}>Report ID: {report.id}</Text>
               </View>
 
               <View style={[styles.statusBadge, { backgroundColor: getStatusColor(report.status) }]}>
@@ -328,7 +405,7 @@ const AdminPage = () => {
 
       {/* Comment & Proof Photo Modal */}
       <Modal visible={commentModalVisible} animationType="slide" transparent={true}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}style={styles.commentModalOverlay}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.commentModalOverlay}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.commentModalOverlay}>
               <View style={styles.commentModalContainer}>
@@ -363,7 +440,7 @@ const AdminPage = () => {
                     </View>
                   )}
                   
-                  <TextInput style={styles.commentInput} placeholder={pendingStatusUpdate?.status === 'Resolved' ? 'Add optional comment' : 'Enter a Comment'} value={adminComment} onChangeText={setAdminComment} multiline maxLength={500}/>
+                  <TextInput style={styles.commentInput} placeholder={pendingStatusUpdate?.status === 'Resolved' ? 'Add optional comment' : 'Enter a Comment'} placeholderTextColor="#8E8E93" value={adminComment} onChangeText={setAdminComment} multiline maxLength={500}/>
                   
                   <Text style={styles.characterCount}>
                     {adminComment.length}/500 characters
@@ -398,27 +475,20 @@ const AdminPage = () => {
         </KeyboardAvoidingView>
       </Modal>
 
-      {/* Map Modal - keeping existing code */}
+      {/* Map Modal*/}
       <Modal visible={mapModalVisible} animationType="slide" transparent={false}>
         <View style={styles.mapModalContainer}>
-          {/* Redesigned Header with Gradient Effect */}
           <View style={styles.mapModalHeader}>
-            <View style={styles.mapModalHeaderContent}>
-              <TouchableOpacity
-                style={styles.mapModalBackButton}
-                onPress={() => setMapModalVisible(false)}
-              >
-                <Text style={styles.mapModalBackIcon}>←</Text>
-              </TouchableOpacity>
-              <View style={styles.mapModalTitleContainer}>
-                <Text style={styles.mapModalTitle} numberOfLines={1}>
-                  {selectedReport?.title}
-                </Text>
-                <Text style={styles.mapModalSubtitle}>
-                  Report Details & Location
-                </Text>
-              </View>
-              <View style={styles.mapModalHeaderSpacer} />
+            <TouchableOpacity style={styles.mapModalBackButton} onPress={() => setMapModalVisible(false)} >
+              <Image source={require('../assets/images/back.png')} style={styles.mapModalBackIcon} resizeMode="contain"/>
+            </TouchableOpacity>
+            <View style={styles.mapModalTitleContainer}>
+              <Text style={styles.mapModalTitle} numberOfLines={1}>
+                {selectedReport?.title}
+              </Text>
+              <Text style={styles.mapModalSubtitle}>
+                Report Details & Location
+              </Text>
             </View>
           </View>
 
@@ -505,13 +575,13 @@ const AdminPage = () => {
               
               {selectedReport?.location && (
                 <View style={styles.mapModalMapContainer}>
-                 <MapView style={styles.mapModalMap} region={{
-                      latitude: selectedReport.location.latitude,
-                      longitude: selectedReport.location.longitude,
-                      latitudeDelta: 0.004,
-                      longitudeDelta: 0.004,
-                    }}
-                    provider="google">
+                  <MapView style={styles.mapModalMap} region={{
+                    latitude: selectedReport.location.latitude,
+                    longitude: selectedReport.location.longitude,
+                    latitudeDelta: 0.004,
+                    longitudeDelta: 0.004,
+                  }}
+                  provider="google">
                     <Marker coordinate={selectedReport.location} title={selectedReport.title}>
                       <View style={styles.mapModalCustomMarker}>
                         <View>
@@ -532,6 +602,9 @@ const AdminPage = () => {
       </Modal>
 
       <View style={styles.bottomNavBar}>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/admin')} disabled={true}>
+          <Image source={require('../assets/images/user.png')} style={styles.navIconImg} />
+        </TouchableOpacity>
         <TouchableOpacity style={styles.navItem} onPress={() => router.push('/mapPageAdmin')}>
           <Image source={require('../assets/images/map.png')} style={styles.navIconImg} />
         </TouchableOpacity>
@@ -540,7 +613,6 @@ const AdminPage = () => {
           <Image source={require('../assets/images/logout.png')} style={styles.navIconImg} />
         </TouchableOpacity>
       </View>     
-
 
       <Modal visible={alertVisible} transparent={true} animationType="fade" onRequestClose={() => setAlertVisible(false)}>
         <View style={styles.overlay}>
@@ -557,11 +629,11 @@ const AdminPage = () => {
             }}>
               <Text style={styles.buttonText}>OK</Text>
             </TouchableOpacity>
-              </View>
           </View>
+        </View>
       </Modal>
     </View>
   );
 };
 
-export default AdminPage; 
+export default AdminPage;

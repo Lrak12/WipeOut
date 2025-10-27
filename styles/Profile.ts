@@ -1,11 +1,18 @@
 import { StyleSheet } from 'react-native';
+import {
+  borderRadius,
+  fontScale,
+  isTablet,
+  safeArea,
+  scale,
+  verticalScale
+} from '../utils/responsive';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E6F5F5',
+    backgroundColor: 'rgba(0, 200, 200, 0.2)',
   },
-  
   
   // Loading styles
   loadingContainer: {
@@ -14,364 +21,393 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#E6F5F5',
   },
+  
   loadingText: {
-    fontSize: 18,
+    fontSize: fontScale(18),
     color: '#4ECAC9',
     fontWeight: '600',
   },
   
   // Scroll content
   scrollContent: {
-    padding: 20,
-    paddingBottom: 40,
+    padding: scale(20),
+    paddingBottom: verticalScale(120), // Account for bottom nav
+    paddingTop: safeArea.top + verticalScale(20),
   },
   
   // Profile card styles
   profileCard: {
     backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 24,
+    borderRadius: borderRadius.xl,
+    padding: scale(isTablet ? 32 : 24),
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
     elevation: 3,
     shadowColor: '#000',
     shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: scale(8),
+    shadowOffset: { width: 0, height: verticalScale(2) },
   },
+  
+  profileImageContainer: {
+    position: 'relative',
+    marginBottom: verticalScale(16),
+  },
+  
+  profileImage: {
+    width: scale(isTablet ? 140 : 120),
+    height: scale(isTablet ? 140 : 120),
+    borderRadius: scale(isTablet ? 70 : 60),
+    borderWidth: scale(4),
+    borderColor: '#4ECAC9',
+  },
+  
+  editImageButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#00C8C8',
+    width: scale(isTablet ? 42 : 36),
+    height: scale(isTablet ? 42 : 36),
+    borderRadius: scale(isTablet ? 21 : 18),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: scale(3),
+    borderColor: '#fff',
+  },
+
+  cameraIcon: {
+    width: scale(isTablet ? 24 : 20),
+    height: scale(isTablet ? 24 : 20),
+    tintColor: '#fff', 
+  },
+  
   userName: {
-    fontSize: 24,
+    fontSize: fontScale(isTablet ? 28 : 24),
     fontWeight: 'bold',
     color: '#222',
-    marginBottom: 4,
-    textAlign: 'center',
-  },
-  userEmail: {
-    fontSize: 16,
-    color: '#4ECAC9',
-    marginBottom: 8,
+    marginBottom: verticalScale(4),
     textAlign: 'center',
   },
   
+  userEmail: {
+    fontSize: fontScale(16),
+    color: '#4ECAC9',
+    marginBottom: verticalScale(8),
+    textAlign: 'center',
+  },
   
   // Stats card styles
   statsCard: {
     backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 20,
+    borderRadius: borderRadius.xl,
+    padding: scale(20),
+    marginBottom: verticalScale(20),
     elevation: 3,
     shadowColor: '#000',
     shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: scale(8),
+    shadowOffset: { width: 0, height: verticalScale(2) },
   },
+  
   statsTitle: {
-    fontSize: 18,
+    fontSize: fontScale(18),
     fontWeight: 'bold',
     color: '#222',
-    marginBottom: 16,
+    marginBottom: verticalScale(16),
     textAlign: 'center',
   },
+  
   statsRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  
   statItem: {
     flex: 1,
     alignItems: 'center',
   },
+  
   statNumber: {
-    fontSize: 28,
+    fontSize: fontScale(isTablet ? 32 : 28),
     fontWeight: 'bold',
     color: '#00C8C8',
-    marginBottom: 4,
+    marginBottom: verticalScale(4),
   },
+  
   statLabel: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: '#666',
     textAlign: 'center',
   },
+  
   statDivider: {
-    width: 1,
-    height: 40,
+    width: scale(1),
+    height: verticalScale(40),
     backgroundColor: '#E0E0E0',
-    marginHorizontal: 20,
+    marginHorizontal: scale(20),
   },
   
   // Reports card styles
   reportsCard: {
     backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 20,
+    borderRadius: borderRadius.xl,
+    padding: scale(20),
+    marginBottom: verticalScale(20),
     elevation: 3,
     shadowColor: '#000',
     shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: scale(8),
+    shadowOffset: { width: 0, height: verticalScale(2) },
   },
+  
   reportsTitle: {
-    fontSize: 18,
+    fontSize: fontScale(18),
     fontWeight: 'bold',
     color: '#222',
-    marginBottom: 16,
+    marginBottom: verticalScale(16),
   },
+  
   reportItem: {
     backgroundColor: '#E6F5F5',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 12,
-    borderWidth: 1,
+    borderRadius: borderRadius.m,
+    padding: scale(14),
+    marginBottom: verticalScale(12),
+    borderWidth: scale(1),
     borderColor: '#4ECAC9',
   },
+  
   reportTitle: {
-    fontSize: 16,
+    fontSize: fontScale(16),
     fontWeight: 'bold',
     color: '#00C8C8',
-    marginBottom: 4,
+    marginBottom: verticalScale(4),
   },
+  
   reportDescription: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: '#222',
-    marginBottom: 6,
+    marginBottom: verticalScale(6),
+    lineHeight: fontScale(20),
   },
+  
   reportDate: {
-    fontSize: 12,
+    fontSize: fontScale(12),
     color: '#666',
   },
+  
   noReportsText: {
     textAlign: 'center',
     color: '#666',
-    fontSize: 16,
+    fontSize: fontScale(16),
     fontStyle: 'italic',
-    paddingVertical: 20,
+    paddingVertical: verticalScale(20),
+    lineHeight: fontScale(24),
   },
   
- 
   refreshButton: {
-    padding: 12,
-    borderRadius: 10,
-    marginTop: 8,
+    padding: scale(12),
+    borderRadius: borderRadius.m,
+    marginTop: verticalScale(8),
   },
+  
   refreshButtonText: {
     textAlign: 'center',
     textDecorationLine: 'underline',
+    fontSize: fontScale(14),
+    color: '#00C8C8',
   },
 
-  profileImageContainer: {
-  position: 'relative',
-  marginBottom: 16,
-},
-profileImage: {
-  width: 120,
-  height: 120,
-  borderRadius: 60,
-  borderWidth: 4,
-  borderColor: '#4ECAC9',
-},
-editImageButton: {
-  position: 'absolute',
-  bottom: 0,
-  right: 0,
-  backgroundColor: '#00C8C8',
-  width: 36,
-  height: 36,
-  borderRadius: 18,
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderWidth: 3,
-  borderColor: '#fff',
-},
+  // Edit modal styles
+  editModalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  
+  editModalContainer: {
+    backgroundColor: '#fff',
+    borderRadius: borderRadius.xl,
+    padding: scale(24),
+    width: isTablet ? '70%' : '85%',
+    maxWidth: scale(500),
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: scale(10),
+    shadowOffset: { width: 0, height: verticalScale(5) },
+  },
+  
+  editModalTitle: {
+    fontSize: fontScale(22),
+    fontWeight: 'bold',
+    color: '#00C8C8',
+    marginBottom: verticalScale(20),
+    textAlign: 'center',
+  },
+  
+  editImageContainer: {
+    alignItems: 'center',
+    marginBottom: verticalScale(20),
+  },
+  
+  editProfileImage: {
+    width: scale(isTablet ? 120 : 100),
+    height: scale(isTablet ? 120 : 100),
+    borderRadius: scale(isTablet ? 60 : 50),
+    borderWidth: scale(3),
+    borderColor: '#4ECAC9',
+    marginBottom: verticalScale(12),
+  },
+  
+  editImagePickerButton: {
+    backgroundColor: '#4ECAC9',
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(8),
+    borderRadius: borderRadius.xl,
+  },
+  
+  editImagePickerText: {
+    color: '#fff',
+    fontSize: fontScale(14),
+    fontWeight: 'bold',
+  },
+  
+  editInput: {
+    borderWidth: scale(2),
+    borderColor: '#4ECAC9',
+    borderRadius: borderRadius.m,
+    padding: scale(16),
+    fontSize: fontScale(16),
+    color: '#222',
+    backgroundColor: '#E6F5F5',
+    marginBottom: verticalScale(20),
+    minHeight: verticalScale(50),
+  },
+  
+  editModalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: scale(12),
+  },
+  
+  editCancelButton: {
+    flex: 1,
+    backgroundColor: '#E0E0E0',
+    paddingVertical: verticalScale(14),
+    borderRadius: borderRadius.m,
+  },
+  
+  editCancelText: {
+    color: '#666',
+    fontSize: fontScale(16),
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  
+  editSaveButton: {
+    flex: 1,
+    backgroundColor: '#00C8C8',
+    paddingVertical: verticalScale(14),
+    borderRadius: borderRadius.m,
+  },
+  
+  editSaveButtonDisabled: {
+    backgroundColor: '#B0B0B0',
+    opacity: 0.7,
+  },
+  
+  editSaveText: {
+    color: '#fff',
+    fontSize: fontScale(16),
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 
-cameraIcon: {
-  width: 20,
-  height: 20,
-  tintColor: '#fff', 
-},
+  // Bottom nav bar
+  bottomNavBar: {
+    position: 'absolute',
+    bottom: verticalScale(15),
+    left: scale(20),
+    right: scale(20),
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: verticalScale(15),
+    borderRadius: borderRadius.xxl,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: verticalScale(4) },
+    shadowOpacity: 0.15,
+    shadowRadius: scale(12),
+    elevation: 8,
+  },
 
+  navItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    paddingVertical: verticalScale(5),
+  },
 
-// Edit modal styles
-editModalOverlay: {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-},
-editModalContainer: {
-  backgroundColor: '#fff',
-  borderRadius: 20,
-  padding: 24,
-  width: '85%',
-  elevation: 10,
-  shadowColor: '#000',
-  shadowOpacity: 0.3,
-  shadowRadius: 10,
-  shadowOffset: { width: 0, height: 5 },
-},
-editModalTitle: {
-  fontSize: 22,
-  fontWeight: 'bold',
-  color: '#00C8C8',
-  marginBottom: 20,
-  textAlign: 'center',
-},
-editInput: {
-  borderWidth: 2,
-  borderColor: '#4ECAC9',
-  borderRadius: 12,
-  padding: 16,
-  fontSize: 16,
-  color: '#222',
-  backgroundColor: '#E6F5F5',
-  marginBottom: 20,
-},
-editModalButtons: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  gap: 12,
-},
-editCancelButton: {
-  flex: 1,
-  backgroundColor: '#E0E0E0',
-  paddingVertical: 14,
-  borderRadius: 12,
-},
-editCancelText: {
-  color: '#666',
-  fontSize: 16,
-  fontWeight: '600',
-  textAlign: 'center',
-},
-editSaveButton: {
-  flex: 1,
-  backgroundColor: '#00C8C8',
-  paddingVertical: 14,
-  borderRadius: 12,
-},
-editSaveButtonDisabled: {
-  backgroundColor: '#B0B0B0',
-  opacity: 0.7,
-},
-editSaveText: {
-  color: '#fff',
-  fontSize: 16,
-  fontWeight: 'bold',
-  textAlign: 'center',
-},
+  navIconImg: {
+    width: scale(24),
+    height: scale(24),
+    resizeMode: 'contain',
+    marginBottom: verticalScale(4),
+    tintColor: '#4ECAC9',
+  },
 
-
-
-// Edit image container in modal
-editImageContainer: {
-  alignItems: 'center',
-  marginBottom: 20,
-},
-editProfileImage: {
-  width: 100,
-  height: 100,
-  borderRadius: 50,
-  borderWidth: 3,
-  borderColor: '#4ECAC9',
-  marginBottom: 12,
-},
-editImagePickerButton: {
-  backgroundColor: '#4ECAC9',
-  paddingHorizontal: 20,
-  paddingVertical: 8,
-  borderRadius: 20,
-},
-editImagePickerText: {
-  color: '#fff',
-  fontSize: 14,
-  fontWeight: 'bold',
-},
-
-
-//bottom nav bar
-bottomNavBar: {
-  position: 'absolute',
-  bottom: 15,
-  left: 20,
-  right: 20,
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  alignItems: 'center',
-  backgroundColor: '#fff',
-  paddingVertical: 15,
-  paddingBottom: 15,
-  borderRadius: 25,
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.15,
-  shadowRadius: 12,
-  elevation: 8,
-},
-
-navItem: {
-  alignItems: 'center',
-  justifyContent: 'center',
-  flex: 1,
-  paddingVertical: 5,
-},
-
-navIconImg: {
-  width: 24,
-  height: 24,
-  resizeMode: 'contain',
-  marginBottom: 4,
-  tintColor: '#4ECAC9',
-},
-
-overlay:{
+  // Alert modal
+  overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
-  alertContainer:{
+  alertContainer: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 25,
-    width: '85%',
-    maxWidth: 400,
+    borderRadius: borderRadius.xl,
+    padding: scale(25),
+    width: isTablet ? '60%' : '85%',
+    maxWidth: scale(400),
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: verticalScale(2) },
     shadowOpacity: 0.25,
-    shadowRadius: 4,
+    shadowRadius: scale(4),
     elevation: 5,
   },
 
-  message:{
-    fontSize: 20,
+  message: {
+    fontSize: fontScale(18),
     color: '#666',
     textAlign: 'center',
-    marginBottom: 20,
-    lineHeight: 22,
+    marginBottom: verticalScale(20),
+    lineHeight: fontScale(24),
   },
 
-  button:{
+  button: {
     backgroundColor: '#00C8C8',
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-    borderRadius: 25,
-    marginTop: 10,
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: scale(40),
+    borderRadius: borderRadius.xxl,
+    marginTop: verticalScale(10),
   },
 
-  buttonText:{
+  buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: fontScale(16),
     fontWeight: 'bold',
   },
 
-  title:{
-    fontSize: 24,
+  title: {
+    fontSize: fontScale(22),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
-  }, 
-
-
+    marginBottom: verticalScale(10),
+    color: '#333',
+  },
 });
